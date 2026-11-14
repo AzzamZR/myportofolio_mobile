@@ -121,6 +121,10 @@ class ItemCard extends StatelessWidget {
             ..showSnackBar(
               SnackBar(
                 content: Text('Kamu telah menekan tombol ${item.name}!'),
+                action: SnackBarAction(
+                  label: 'Tutup',
+                  onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
+                ),
               ),
             );
         },
