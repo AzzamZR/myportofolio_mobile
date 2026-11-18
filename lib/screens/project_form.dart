@@ -11,7 +11,7 @@ class ProjectFormPage extends StatefulWidget {
 class _ProjectFormPageState extends State<ProjectFormPage> {
   final _formKey = GlobalKey<FormState>();
 
-  String _projectName = "";
+  String _title = "";
   String _description = "";
   String _category = "Web Development";
   String _technologies = "";
@@ -53,7 +53,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                   ),
                   onChanged: (String? value) {
                     setState(() {
-                      _projectName = value!;
+                      _title = value!;
                     });
                   },
                   validator: (String? value) {
@@ -172,7 +172,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text('Nama Proyek: $_projectName'),
+                                    Text('Nama Proyek: $_title'),
                                     Text('Deskripsi: $_description'),
                                     Text('Kategori: $_category'),
                                     Text('Teknologi: $_technologies'),
