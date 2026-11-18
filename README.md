@@ -43,6 +43,26 @@ Sebagai tambahan interaktivitas sederhana, saya menambahkan `SnackBarAction` ber
 
 Saat pengerjaan, saya sempat menemukan error `Instance member 'blue' can't be accessed using static access` karena menulis `Color.blue` alih-alih `Colors.blue`. Saya juga perlu memperhatikan posisi parameter `action` agar berada di dalam constructor `SnackBar`, bukan widget lain. Dari proses tersebut, saya lebih memahami perbedaan tipe `Color` dan kumpulan warna `Colors`, serta hubungan antarkomponen melalui parameter constructor.
 
+### Tutorial 09
+
+Pada Tutorial 09, saya mulai mempelajari navigasi antarhalaman, pembuatan formulir, dan pengelolaan input pada Flutter. Saya membuat `LeftDrawer` sebagai menu navigasi yang memungkinkan pengguna berpindah antara halaman utama dan formulir penambahan proyek. Saya juga mempelajari perbedaan penggunaan `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()` dalam mengelola perpindahan halaman.
+
+Selanjutnya, saya membuat `ProjectFormPage` menggunakan `StatefulWidget`, `Form`, dan `GlobalKey<FormState>`. Formulir tersebut memiliki beberapa input untuk nama proyek, deskripsi, kategori, teknologi, dan tautan proyek. Saya menggunakan `TextFormField` dan `DropdownButtonFormField` untuk menerima input, serta `validator` untuk memeriksa field yang wajib diisi. Setelah validasi berhasil, data ditampilkan melalui `AlertDialog`, tanpa disimpan ke database.
+
+Pada akhir tutorial, saya melakukan refactoring dengan memisahkan halaman ke dalam folder `screens` dan komponen yang dapat digunakan kembali ke dalam folder `widgets`. Pemisahan ini membuat struktur proyek lebih rapi dan memudahkan pengelolaan kode.
+
+### Individual Assignment 8
+
+Pada Tugas 8, saya melanjutkan aplikasi dari Tutorial 09 dengan membuat formulir baru untuk bagian Pengalaman (*Experience*) yang disesuaikan dengan model pada proyek Django saya. Formulir ini memiliki empat input, yaitu judul pengalaman, deskripsi, kategori, dan URL thumbnail. Saya menggunakan `TextFormField` untuk input teks dan `DropdownButtonFormField` untuk pemilihan kategori.
+
+Saya membuat `ExperienceFormPage` menggunakan `StatefulWidget` agar dapat mengelola nilai input melalui state. Formulir dilengkapi validasi dasar untuk memastikan judul dan deskripsi tidak kosong. Setelah pengguna menekan tombol Save dan input lolos validasi, aplikasi menampilkan ringkasan data melalui `AlertDialog`. Seperti pada Tutorial 09, data masih disimpan sementara dalam state aplikasi dan belum terhubung dengan database.
+
+Saya juga menambahkan kartu Tambah Pengalaman pada halaman utama dan opsi Add Experience pada Drawer. Navigasi melalui kartu menggunakan `Navigator.push()`, sedangkan navigasi melalui Drawer menggunakan `Navigator.pushReplacement()`. Dengan demikian, halaman formulir dapat diakses melalui dua cara berbeda.
+
+Sebagai pengembangan tambahan, saya menyesuaikan layout halaman utama agar jumlah kolom kartu mengikuti lebar layar. Saya menggunakan `LayoutBuilder` untuk menentukan jumlah kolom pada `GridView`, yaitu dua kolom pada layar sempit dan empat kolom pada layar yang lebih lebar. Ketika perubahan tersebut menyebabkan overflow, saya menambahkan `SingleChildScrollView` agar konten halaman tetap dapat diakses dengan menggulir layar.
+
+Saya juga mengganti nama `project_card.dart` menjadi `item_card.dart` karena widget tersebut sekarang digunakan untuk beberapa jenis tombol, bukan hanya tombol proyek. Perubahan dilakukan secara bertahap dengan commit terpisah agar riwayat pengembangan lebih mudah dipahami.
+
 ---
 
 ## Struktur Proyek
@@ -50,15 +70,21 @@ Saat pengerjaan, saya sempat menemukan error `Instance member 'blue' can't be ac
 ```text
 myportofolio_mobile/
 ├── lib/
-│   ├── main.dart         # Entry point, MaterialApp, dan tema
-│   └── menu.dart         # MyHomePage, InfoCard, ItemHomepage, ItemCard
+│   ├── main.dart
+│   ├── screens/
+│   │   ├── menu.dart
+│   │   ├── project_form.dart
+│   │   └── experience_form.dart
+│   └── widgets/
+│       ├── item_card.dart
+│       └── left_drawer.dart
 ├── test/
-│   └── widget_test.dart  # Pengujian widget menu utama
-├── android/               # Konfigurasi proyek Android
-├── ios/                   # Konfigurasi proyek iOS
-├── web/                   # Konfigurasi aplikasi web
-├── pubspec.yaml           # Konfigurasi proyek dan dependensi
-└── README.md              # Dokumentasi proyek
+│   └── widget_test.dart
+├── android/
+├── ios/
+├── web/
+├── pubspec.yaml
+└── README.md
 ```
 
 ## Menjalankan Proyek
@@ -140,6 +166,32 @@ Sebagai contoh, `Theme.of(context).colorScheme.primary` digunakan untuk mengambi
 
 *Hot restart* menjalankan kembali aplikasi Dart dari awal dan menghapus state yang sedang tersimpan. Cara ini lebih cocok jika perubahan berkaitan dengan inisialisasi atau state awal yang tidak diterapkan hanya melalui hot reload. Sementara itu, *full restart* menghentikan dan menjalankan ulang proses aplikasi, misalnya ketika ada perubahan native, konfigurasi platform, atau dependensi yang membutuhkan proses build ulang. Jadi, hot reload paling praktis untuk perubahan UI biasa, tetapi tidak dapat digunakan untuk semua jenis perubahan.
 
+### Tugas 8
+
+**1. Jelaskan perbedaan antara Navigator.push(), Navigator.pushReplacement(), dan Navigator.pop(). Metode apa yang digunakan untuk membuka formulir dari kartu aksi? Jelaskan juga bagaimana opsi Home di drawer membawa pengguna kembali ke halaman utama.**
+
+`Navigator.push()` digunakan untuk membuka halaman baru dengan menambahkannya ke dalam stack navigasi, sehingga halaman sebelumnya masih tersimpan dan pengguna dapat kembali menggunakan tombol Back. Sementara itu, `Navigator.pushReplacement()` mengganti halaman yang sedang aktif dengan halaman baru, tanpa menambahkannya di atas halaman lama. Berbeda dengan keduanya, `Navigator.pop()` digunakan untuk menutup halaman atau dialog yang sedang aktif dan kembali ke route sebelumnya.
+
+Pada proyek saya, kartu Tambah Proyek dan Tambah Pengalaman menggunakan `Navigator.push()` agar pengguna dapat kembali ke halaman utama setelah membuka formulir. Sementara itu, opsi pada Drawer menggunakan `Navigator.pushReplacement()` untuk mengganti halaman yang sedang ditampilkan. Ketika pengguna memilih Home dari halaman formulir, aplikasi akan membuka kembali `MyHomePage` sebagai halaman utama. Saya juga menggunakan `Navigator.pop()` untuk menutup `AlertDialog` setelah pengguna menekan tombol OK.
+
+**2. Bagaimana susunan Scaffold, AppBar, dan Drawer membantu menjaga struktur halaman tetap konsisten? Berikan satu contoh penggunaan warna tema portofolio di lebih dari satu halaman.**
+
+`Scaffold` berfungsi sebagai kerangka utama halaman yang menyediakan tempat untuk `AppBar`, `Drawer`, dan `body`. Dengan menggunakan struktur yang sama pada setiap halaman, tampilan dan navigasi aplikasi menjadi lebih konsisten. `AppBar` digunakan untuk menampilkan judul halaman, sedangkan `Drawer` menyediakan akses ke halaman lain tanpa perlu membuat menu navigasi yang berbeda pada setiap layar.
+
+Pada proyek saya, halaman utama dan `ExperienceFormPage` sama-sama menggunakan `Scaffold` dan komponen `LeftDrawer`. Saya juga menggunakan `Theme.of(context).colorScheme.primary` sebagai warna latar `AppBar` pada kedua halaman tersebut. Dengan mengambil warna dari tema yang sama, tampilan aplikasi tetap selaras meskipun halaman memiliki isi yang berbeda.
+
+**3. Mengapa tata letak tersebut dipilih untuk formulir? Jelaskan peran widget pengatur jarak dan widget penggulir ketika ruang layar terbatas.**
+
+Saya menggunakan `Column` karena input formulir lebih mudah dibaca dan diisi ketika disusun secara vertikal. Setiap input dibungkus dengan `Padding` agar memiliki jarak dari tepi halaman dan tidak terlalu berdekatan dengan input lainnya. Penyusunan ini juga mengikuti pola formulir yang sudah dipelajari pada Tutorial 09.
+
+Untuk mengatasi keterbatasan tinggi layar, saya menggunakan `SingleChildScrollView` sehingga seluruh input dan tombol Save tetap dapat dijangkau dengan menggulir halaman. Selain itu, pada halaman utama saya menggunakan `LayoutBuilder` untuk menyesuaikan jumlah kolom kartu berdasarkan lebar layar. Ketika susunan dua kolom membuat konten lebih tinggi daripada layar, saya juga menggunakan `SingleChildScrollView` untuk mengatasi overflow. Dari perubahan tersebut, saya memahami bahwa responsivitas tidak hanya berkaitan dengan lebar komponen, tetapi juga tinggi konten yang tersedia.
+
+**4. Apa peran GlobalKey<FormState>, validator, dan validate() saat tombol Simpan ditekan? Berikan satu contoh nilai yang ditolak oleh validasi dan jelaskan mengapa memilih jenis input atau papan ketik saja belum cukup.**
+
+`GlobalKey<FormState>` digunakan untuk mengakses state dari widget `Form`. Melalui key tersebut, saya dapat memanggil `validate()` ketika tombol Save ditekan. Method `validate()` menjalankan fungsi `validator` pada field yang memiliki aturan validasi. Jika ada input yang tidak valid, validator mengembalikan pesan kesalahan yang ditampilkan pada field terkait. Jika seluruh pemeriksaan berhasil, aplikasi dapat melanjutkan proses dengan menampilkan `AlertDialog`.
+
+Contohnya, pada field Judul Pengalaman, input yang hanya berisi spasi akan ditolak karena validator menggunakan `value.trim().isEmpty`. Hal yang sama juga berlaku pada Deskripsi Pengalaman. Pemeriksaan ini penting karena penggunaan `TextFormField` atau pemilihan jenis keyboard hanya membantu pengguna memasukkan data, tetapi tidak menjamin bahwa isinya sesuai dengan aturan yang dibutuhkan. Oleh karena itu, validasi tetap harus dilakukan melalui kode agar input yang tidak sesuai dapat ditolak.
+
 ---
 
 ## AI Disclosure
@@ -194,3 +246,59 @@ Pada tahap ini, saya menggunakan **ChatGPT** sebagai alat bantu untuk mempelajar
 Selama pengerjaan, saya menyadari bahwa hasil dan saran dari AI tidak selalu sepenuhnya sesuai dengan kondisi proyek, sehingga tetap perlu dipahami dan diperiksa kembali sebelum diterapkan. AI cukup membantu dalam menjelaskan konsep, memahami alur kode, serta memberikan alternatif penyelesaian ketika menemukan kendala. Namun, saya tetap perlu menyesuaikan saran tersebut dengan struktur dan kebutuhan proyek yang sedang dikembangkan.
 
 Oleh karena itu, saya memilih untuk mengerjakan perubahan secara bertahap agar lebih mudah memahami fungsi dan hubungan antarbagian kode. Saya juga berusaha untuk tidak hanya mengikuti solusi yang diberikan, tetapi memahami alasan di balik penerapannya. Dengan begitu, AI berperan sebagai alat bantu pembelajaran, sedangkan proses implementasi, pengambilan keputusan, dan pemeriksaan hasil akhir tetap menjadi tanggung jawab saya.
+
+### Tutorial 09 & Individual Assignment 8
+
+Pada tahap ini, saya menggunakan **ChatGPT** sebagai alat bantu untuk memahami penerapan navigasi, pengelolaan state, validasi formulir, dan responsivitas pada Flutter. Saya memberikan modul Tutorial 09, instruksi Tugas 8, serta beberapa file kode agar pembahasan dapat disesuaikan dengan struktur proyek yang sedang saya kerjakan.
+
+Strategi prompting yang saya gunakan adalah meminta penjelasan secara bertahap, membandingkan implementasi dengan tutorial, dan mendiskusikan alasan di balik penggunaan widget maupun perubahan logika. Saya juga menggunakan AI untuk membantu menganalisis masalah yang muncul setelah perubahan kode, kemudian memeriksa hasilnya secara langsung.
+
+**Bagian yang Dibantu AI:**
+
+- Menjelaskan perbedaan `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()` serta pengaruhnya terhadap navigation stack.
+- Membantu memahami hubungan antara `StatefulWidget`, `setState()`, `GlobalKey<FormState>`, dan proses validasi input.
+- Menjelaskan bagaimana nilai input disimpan sementara dalam state dan mengapa `AlertDialog` tidak berarti data sudah tersimpan ke database.
+- Membantu memahami penggunaan `LayoutBuilder` untuk menyesuaikan jumlah kolom berdasarkan lebar layar.
+- Membantu menganalisis penyebab overflow setelah perubahan layout dan memahami peran `SingleChildScrollView`.
+
+**Bagian yang Saya Kerjakan dan Putuskan Sendiri:**
+
+- Memilih Pengalaman sebagai formulir baru dan menyesuaikan field dengan model portofolio Django.
+- Memilih penggunaan `List<String>` untuk kategori agar tetap sesuai dengan pola yang dipelajari pada tutorial.
+- Menyederhanakan formulir menjadi empat input tanpa tanggal selesai.
+- Menerapkan navigasi melalui kartu pada halaman utama dan menu Drawer.
+- Mengganti nama `project_card.dart` menjadi `item_card.dart` agar lebih sesuai dengan tanggung jawab widget.
+- Memilih responsivitas halaman utama sebagai pengembangan tambahan dan mempertahankan implementasi yang sederhana.
+- Melakukan implementasi, pengujian tampilan, dan commit secara bertahap.
+
+#### AI Chat / Prompting Log
+
+1. **Memahami hubungan antara input, state, dan penyimpanan data**
+
+   > "lalu yang aku save, disimpan dimana?"
+
+   **Konteks & Tujuan:** Saya ingin memahami apa yang sebenarnya terjadi ketika tombol Save ditekan. Dari pembahasan tersebut, saya mengetahui bahwa data pada formulir masih disimpan sementara dalam variabel state, sedangkan `AlertDialog` hanya menampilkan hasil input. Hal ini membantu saya membedakan pengelolaan state di Flutter dengan penyimpanan data secara permanen.
+
+2. **Memahami hubungan URL dengan penampilan gambar**
+
+   > "ketika kita menyimpan url gambar, bagaimana kita mununjukannya nanti?"
+
+   **Konteks & Tujuan:** Saya ingin mengetahui bagaimana URL yang disimpan sebagai String dapat digunakan untuk menampilkan gambar. Melalui pembahasan `Image.network()`, saya memahami bahwa menyimpan alamat gambar dan mengambil gambar dari alamat tersebut merupakan dua proses yang berbeda. Saya juga mempelajari pentingnya menangani kemungkinan gambar gagal dimuat, meskipun fitur preview belum diterapkan.
+
+3. **Memahami variabel dan constraints pada LayoutBuilder**
+
+   > "Undefined name 'constrains'. Try correcting the name to one that is defined, or defining the name. mengapa tidak dapat digunakan?"
+
+   **Konteks & Tujuan:** Ketika mencoba menerapkan layout responsif, saya menemukan error karena menggunakan nama variabel yang tidak sesuai dengan parameter `constraints` pada `LayoutBuilder`. Dari masalah ini, saya memahami bahwa nilai lebar yang digunakan harus berasal dari parameter builder yang benar dan bahwa penamaan variabel harus konsisten.
+
+4. **Menganalisis pengaruh perubahan layout terhadap tinggi konten**
+
+   > "ini kenapa?"
+
+   **Konteks & Tujuan:** Setelah jumlah kolom kartu disesuaikan dengan lebar layar, aplikasi mengalami `BOTTOM OVERFLOWED`. Dari pembahasan tersebut, saya memahami bahwa perubahan jumlah kolom pada `GridView` juga memengaruhi ukuran serta tinggi keseluruhan konten. Saya kemudian menggunakan `SingleChildScrollView` agar halaman tetap dapat digulir ketika kontennya melebihi ruang yang tersedia.
+
+#### Keterbatasan AI dan Pemahaman Saya
+
+Selama pengerjaan, saya menyadari bahwa solusi AI tidak selalu langsung sesuai dengan struktur proyek atau kebutuhan yang saya inginkan. Terkadang AI menyarankan perubahan yang lebih luas, sementara saya hanya membutuhkan penyesuaian pada bagian tertentu. Oleh karena itu, saya perlu memahami solusi yang diberikan dan menentukan apakah perubahan tersebut memang diperlukan.
+
+Saya juga menemukan bahwa keberhasilan analisis kode tidak selalu menjamin tampilan berjalan dengan baik pada berbagai ukuran layar. Masalah overflow menjadi contoh bahwa pengujian langsung tetap diperlukan untuk mengevaluasi perilaku layout. Dari proses ini, saya semakin memahami pentingnya hubungan antara struktur widget, batasan ruang, dan pengelolaan state. AI membantu saya memahami konsep dan menelusuri masalah, tetapi keputusan implementasi serta pemeriksaan hasil akhirnya tetap saya lakukan sendiri.
