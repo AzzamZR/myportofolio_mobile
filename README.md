@@ -11,19 +11,25 @@ Aplikasi portofolio pribadi milik **Azzam Zawawi Al Rasyid**, dikembangkan mengg
 
 ## Deskripsi Proyek
 
-`myportofolio_mobile` merupakan aplikasi Flutter yang dibuat sebagai pengembangan awal versi mobile dari website portofolio pribadi saya. Pada tahap Tutorial 08 dan Individual Assignment 7, aplikasi masih berfokus pada halaman menu utama, penampilan identitas pemilik, serta tombol interaktif. Belum ada integrasi dengan database atau API Django, sehingga tombol menu belum membuka halaman proyek ataupun menjalankan proses logout yang sebenarnya.
+myportofolio_mobile merupakan aplikasi portofolio pribadi berbasis Flutter dan Dart yang dikembangkan sebagai versi mobile dari proyek myportofolio berbasis Django. Aplikasi ini dirancang untuk menampilkan dan mengelola berbagai informasi portofolio, seperti profil, proyek, dan pengalaman, melalui antarmuka mobile yang interaktif.
 
-Aplikasi menggunakan pendekatan berbasis *widget*, dengan pemisahan kode inisialisasi pada `main.dart` dan halaman utama pada `menu.dart`. Komponen `InfoCard` digunakan kembali untuk menampilkan informasi profil, sedangkan `ItemHomepage` menyimpan data tombol yang kemudian ditampilkan melalui `ItemCard`.
+Pengembangan aplikasi dilakukan secara bertahap sebagai bagian dari mata kuliah Pemrograman Berbasis Platform (PBP). Proyek ini menerapkan berbagai konsep pengembangan Flutter, mulai dari penyusunan antarmuka berbasis widget, pengelolaan state, navigasi antarhalaman, hingga integrasi data dengan backend pada tahap pengembangan selanjutnya.
+
+Struktur aplikasi dirancang secara modular agar setiap halaman dan komponen dapat dikembangkan serta dipelihara secara terpisah seiring bertambahnya fitur.
 
 ---
 
 ## Fitur Utama
 
-- **Informasi Profil (`InfoCard`):** Menampilkan NPM, nama lengkap, dan kelas PBP dalam tiga kartu pada halaman utama.
-- **Menu Portofolio (`ItemCard`):** Menampilkan tiga tombol, yaitu Lihat Proyek, Tambah Proyek, dan Logout, dengan ikon yang sesuai.
-- **Warna Tombol Berbeda:** Setiap menu menyimpan atribut `color` pada model `ItemHomepage` sehingga warna kartu dapat diatur tanpa percabangan berdasarkan nama tombol.
-- **SnackBar Interaktif:** Ketika tombol ditekan, aplikasi menampilkan pesan sesuai nama tombol. Saya juga menambahkan aksi **Tutup** untuk menyembunyikan SnackBar secara manual, tanpa menghilangkan perilaku penutupan otomatis dalam kondisi normal.
-- **Struktur Widget Terpisah:** `main.dart` digunakan untuk inisialisasi aplikasi dan tema, sedangkan `menu.dart` berisi susunan halaman serta komponen UI.
+- **Informasi Profil (`InfoCard`):** Menampilkan NPM, nama lengkap, dan kelas PBP pada halaman utama.
+- **Menu Portofolio (`ItemCard`):** Menampilkan empat kartu menu, yaitu Lihat Proyek, Tambah Proyek, Tambah Pengalaman, dan Logout, dengan ikon serta warna yang berbeda.
+- **Navigasi Antarhalaman:** Menggunakan `Navigator.push()` pada kartu menu dan `Navigator.pushReplacement()` pada Drawer untuk berpindah halaman.
+- **Formulir Proyek (`ProjectFormPage`):** Menyediakan input informasi proyek dengan validasi dan ringkasan hasil melalui `AlertDialog`.
+- **Formulir Pengalaman (`ExperienceFormPage`):** Menyediakan input judul, deskripsi, kategori, dan URL thumbnail pengalaman.
+- **Thumbnail Preview:** Menampilkan gambar secara langsung berdasarkan URL yang dimasukkan pada formulir pengalaman, disertai indikator loading dan penanganan error.
+- **Layout Responsif:** Menggunakan `LayoutBuilder` untuk menyesuaikan jumlah kolom menu berdasarkan lebar layar dan `SingleChildScrollView` untuk mengatasi keterbatasan ruang.
+- **SnackBar Interaktif:** Menampilkan pesan sesuai tombol yang ditekan dan menyediakan aksi Tutup.
+- **Struktur Widget Terpisah:** Memisahkan halaman dan komponen ke dalam folder `screens` dan `widgets` agar kode lebih terorganisasi.
 
 ---
 
@@ -59,9 +65,9 @@ Saya membuat `ExperienceFormPage` menggunakan `StatefulWidget` agar dapat mengel
 
 Saya juga menambahkan kartu Tambah Pengalaman pada halaman utama dan opsi Add Experience pada Drawer. Navigasi melalui kartu menggunakan `Navigator.push()`, sedangkan navigasi melalui Drawer menggunakan `Navigator.pushReplacement()`. Dengan demikian, halaman formulir dapat diakses melalui dua cara berbeda.
 
-Sebagai pengembangan tambahan, saya menyesuaikan layout halaman utama agar jumlah kolom kartu mengikuti lebar layar. Saya menggunakan `LayoutBuilder` untuk menentukan jumlah kolom pada `GridView`, yaitu dua kolom pada layar sempit dan empat kolom pada layar yang lebih lebar. Ketika perubahan tersebut menyebabkan overflow, saya menambahkan `SingleChildScrollView` agar konten halaman tetap dapat diakses dengan menggulir layar.
+Sebagai pengembangan interaktivitas tambahan, saya menambahkan fitur **Thumbnail Preview** pada `ExperienceFormPage` yang memungkinkan pengguna melihat gambar secara langsung berdasarkan URL thumbnail yang dimasukkan. Fitur ini memanfaatkan state `_thumbnail` dan `Image.network()` untuk menampilkan gambar secara dinamis tanpa perlu menekan tombol **Save**.
 
-Saya juga mengganti nama `project_card.dart` menjadi `item_card.dart` karena widget tersebut sekarang digunakan untuk beberapa jenis tombol, bukan hanya tombol proyek. Perubahan dilakukan secara bertahap dengan commit terpisah agar riwayat pengembangan lebih mudah dipahami.
+Preview hanya ditampilkan ketika URL tidak kosong dan menggunakan `BoxFit.contain` agar gambar tetap terlihat secara utuh. Saya juga menerapkan `loadingBuilder` untuk menampilkan indikator selama proses pemuatan gambar serta `errorBuilder` untuk menangani gambar yang gagal dimuat. Fitur ini berfungsi sebagai pratinjau visual dan tidak melibatkan penyimpanan data permanen.
 
 ---
 
@@ -260,6 +266,9 @@ Strategi prompting yang saya gunakan adalah meminta penjelasan secara bertahap, 
 - Menjelaskan bagaimana nilai input disimpan sementara dalam state dan mengapa `AlertDialog` tidak berarti data sudah tersimpan ke database.
 - Membantu memahami penggunaan `LayoutBuilder` untuk menyesuaikan jumlah kolom berdasarkan lebar layar.
 - Membantu menganalisis penyebab overflow setelah perubahan layout dan memahami peran `SingleChildScrollView`.
+- Membantu memahami penerapan *conditional rendering* dan penggunaan `setState()` untuk memperbarui thumbnail preview berdasarkan perubahan input.
+- Menjelaskan fungsi `Image.network()`, `loadingBuilder`, dan `errorBuilder` dalam menampilkan gambar serta menangani kondisi loading dan error.
+- Membantu membandingkan penggunaan `BoxFit.cover` dan `BoxFit.contain` untuk menentukan tampilan gambar yang sesuai dengan kebutuhan preview.
 
 **Bagian yang Saya Kerjakan dan Putuskan Sendiri:**
 
@@ -270,6 +279,9 @@ Strategi prompting yang saya gunakan adalah meminta penjelasan secara bertahap, 
 - Mengganti nama `project_card.dart` menjadi `item_card.dart` agar lebih sesuai dengan tanggung jawab widget.
 - Memilih responsivitas halaman utama sebagai pengembangan tambahan dan mempertahankan implementasi yang sederhana.
 - Melakukan implementasi, pengujian tampilan, dan commit secara bertahap.
+- Memutuskan untuk menambahkan Thumbnail Preview sebagai pengembangan interaktivitas tanpa membuat fitur penyimpanan yang belum dibutuhkan.
+- Memilih `BoxFit.contain` agar gambar dapat ditampilkan secara utuh tanpa terpotong.
+- Mempertahankan mekanisme formulir yang sudah ada dan membatasi perubahan pada bagian thumbnail.
 
 #### AI Chat / Prompting Log
 
@@ -297,8 +309,22 @@ Strategi prompting yang saya gunakan adalah meminta penjelasan secara bertahap, 
 
    **Konteks & Tujuan:** Setelah jumlah kolom kartu disesuaikan dengan lebar layar, aplikasi mengalami `BOTTOM OVERFLOWED`. Dari pembahasan tersebut, saya memahami bahwa perubahan jumlah kolom pada `GridView` juga memengaruhi ukuran serta tinggi keseluruhan konten. Saya kemudian menggunakan `SingleChildScrollView` agar halaman tetap dapat digulir ketika kontennya melebihi ruang yang tersedia.
 
+5. **Memahami cakupan pengembangan fitur thumbnail**
+
+   > "Tapi aplikasinya kan belum bisa menyimpan atau menampilkan data yang sudah ditambahkan?"
+
+   **Konteks & Tujuan:** Saya ingin memastikan fitur tambahan yang dikembangkan tetap sesuai dengan cakupan Tugas 8. Dari pembahasan ini, saya memahami perbedaan antara menampilkan preview gambar dan mengelola data yang sudah disimpan. Saya kemudian memilih untuk mengembangkan **Thumbnail Preview** karena fitur tersebut dapat meningkatkan interaktivitas formulir tanpa memerlukan sistem penyimpanan atau halaman baru.
+
+6. **Menyesuaikan tampilan gambar pada Thumbnail Preview**
+
+   > "Bagaimana cara mengatur tampilan gambar agar ukurannya lebih sesuai dan tidak terpotong?"
+
+   **Konteks & Tujuan:** Saya ingin menampilkan gambar dengan proporsi yang sesuai tanpa memotong bagian tertentu. Dari pembahasan ini, saya memahami perbedaan `BoxFit.cover` dan `BoxFit.contain`, terutama dalam menyesuaikan gambar dengan ukuran area yang tersedia. Saya memilih menggunakan `BoxFit.contain` agar gambar dapat ditampilkan secara utuh pada bagian preview.
+
 #### Keterbatasan AI dan Pemahaman Saya
 
-Selama pengerjaan, saya menyadari bahwa solusi AI tidak selalu langsung sesuai dengan struktur proyek atau kebutuhan yang saya inginkan. Terkadang AI menyarankan perubahan yang lebih luas, sementara saya hanya membutuhkan penyesuaian pada bagian tertentu. Oleh karena itu, saya perlu memahami solusi yang diberikan dan menentukan apakah perubahan tersebut memang diperlukan.
+Selama pengerjaan, saya menyadari bahwa saran dari AI tidak selalu sesuai dengan kebutuhan dan kondisi proyek yang sedang dikembangkan. Beberapa solusi yang diberikan terkadang mencakup perubahan yang lebih luas dari yang diperlukan. Oleh karena itu, saya perlu memahami setiap saran terlebih dahulu dan menyesuaikannya dengan struktur kode, materi yang sudah dipelajari, serta tujuan pengembangan aplikasi.
 
-Saya juga menemukan bahwa keberhasilan analisis kode tidak selalu menjamin tampilan berjalan dengan baik pada berbagai ukuran layar. Masalah overflow menjadi contoh bahwa pengujian langsung tetap diperlukan untuk mengevaluasi perilaku layout. Dari proses ini, saya semakin memahami pentingnya hubungan antara struktur widget, batasan ruang, dan pengelolaan state. AI membantu saya memahami konsep dan menelusuri masalah, tetapi keputusan implementasi serta pemeriksaan hasil akhirnya tetap saya lakukan sendiri.
+Saya juga memahami bahwa kode yang terlihat benar belum tentu menghasilkan perilaku atau tampilan yang sesuai. Hal ini membuat saya perlu melakukan pengujian secara langsung, terutama ketika mengubah layout, mengelola state, atau menambahkan interaktivitas baru. Melalui proses tersebut, saya semakin memahami pentingnya hubungan antar-widget dan bagaimana perubahan pada satu bagian dapat memengaruhi bagian lainnya.
+
+Secara keseluruhan, AI membantu saya memahami konsep, mengeksplorasi alternatif implementasi, dan mencari penyebab masalah. Namun, saya tetap perlu mengevaluasi solusi yang diberikan, menentukan perubahan yang sesuai, serta memastikan hasil implementasinya berjalan sebagaimana mestinya.
