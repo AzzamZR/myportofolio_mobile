@@ -133,6 +133,38 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   },
                 ),
               ),
+
+              // === Thumbnail Preview ===
+              if (_thumbnail.trim().isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Image.network(
+                    _thumbnail.trim(),
+                    width: double.infinity,
+                    fit: BoxFit.contain,
+                    loadingBuilder: (context, child, loadingProgress) {
+                      if (loadingProgress == null) {
+                        return child;
+                      }
+
+                      return const SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                      );
+                    },
+                    errorBuilder: (context, error, stackTrace) {
+                      return const SizedBox(
+                        height: 200,
+                        child: Center(
+                          child: Text("Gambar gagal dimuat"),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
               // === Tombol Simpan ===
               Align(
                 alignment: Alignment.bottomCenter,
