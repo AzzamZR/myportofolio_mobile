@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/item_card.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
   MyHomePage({super.key});
@@ -9,15 +11,21 @@ class MyHomePage extends StatelessWidget {
   final String nama = 'Azzam Zawawi Al Rasyid';
   final String kelas = 'PBP A';
 
-  final List<ItemHomepage> items = [
-    ItemHomepage('Lihat Proyek', Icons.folder, Colors.blue),
-    ItemHomepage('Tambah Proyek', Icons.add_circle, Colors.green),
-    ItemHomepage('Tambah Pengalaman', Icons.work, Colors.orange),
-    ItemHomepage('Logout', Icons.logout, Colors.red),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
+
+    final List<ItemHomepage> items = [
+      ItemHomepage('Lihat Proyek', Icons.folder, Colors.blue),
+      ItemHomepage('Tambah Proyek', Icons.add_circle, Colors.green),
+      ItemHomepage('Tambah Pengalaman', Icons.work, Colors.orange),
+      ItemHomepage(
+        isLoggedIn ? 'Logout' : 'Login',
+        isLoggedIn ? Icons.logout : Icons.login,
+        isLoggedIn ? Colors.red : Colors.indigo,
+      ),
+    ];
+    
     return Scaffold(
       appBar: AppBar(
         title: const Text(
