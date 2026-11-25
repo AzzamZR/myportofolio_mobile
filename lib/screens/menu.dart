@@ -25,7 +25,7 @@ class MyHomePage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white)
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
@@ -76,7 +76,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ),
     );
   }

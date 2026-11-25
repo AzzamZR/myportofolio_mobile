@@ -101,10 +101,12 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                   ),
                   initialValue: _category,
                   items: _categories
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          ))
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(category),
+                        ),
+                      )
                       .toList(),
                   onChanged: (String? newValue) {
                     setState(() {
@@ -156,8 +158,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.indigo),
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -165,9 +166,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                           context: context,
                           builder: (context) {
                             return AlertDialog(
-                              title: const Text(
-                                'Proyek berhasil ditambahkan!',
-                              ),
+                              title: const Text('Proyek berhasil ditambahkan!'),
                               content: SingleChildScrollView(
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
