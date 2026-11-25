@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 
@@ -102,10 +101,12 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   ),
                   initialValue: _category,
                   items: _categories
-                      .map((category) => DropdownMenuItem(
-                            value: category,
-                            child: Text(category),
-                          ))
+                      .map(
+                        (category) => DropdownMenuItem(
+                          value: category,
+                          child: Text(category),
+                        ),
+                      )
                       .toList(),
                   onChanged: (String? newValue) {
                     setState(() {
@@ -149,17 +150,13 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
 
                       return const SizedBox(
                         height: 200,
-                        child: Center(
-                          child: CircularProgressIndicator(),
-                        ),
+                        child: Center(child: CircularProgressIndicator()),
                       );
                     },
                     errorBuilder: (context, error, stackTrace) {
                       return const SizedBox(
                         height: 200,
-                        child: Center(
-                          child: Text("Gambar gagal dimuat"),
-                        ),
+                        child: Center(child: Text("Gambar gagal dimuat")),
                       );
                     },
                   ),
@@ -172,8 +169,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                   padding: const EdgeInsets.all(8.0),
                   child: ElevatedButton(
                     style: ButtonStyle(
-                      backgroundColor:
-                          WidgetStateProperty.all(Colors.indigo),
+                      backgroundColor: WidgetStateProperty.all(Colors.indigo),
                     ),
                     onPressed: () {
                       if (_formKey.currentState!.validate()) {
@@ -191,7 +187,7 @@ class _ExperienceFormPageState extends State<ExperienceFormPage> {
                                     Text('Nama Pengalaman: $_title'),
                                     Text('Deskripsi: $_description'),
                                     Text('Kategori: $_category'),
-                                    Text('Thumbnail: $_thumbnail')
+                                    Text('Thumbnail: $_thumbnail'),
                                   ],
                                 ),
                               ),

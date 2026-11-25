@@ -1,8 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/screens/menu.dart';
 import 'package:myportofolio_mobile/screens/project_form.dart';
 import 'package:myportofolio_mobile/screens/experience_form.dart';
+import 'package:myportofolio_mobile/screens/project_list_screen.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:myportofolio_mobile/widgets/auth_guard.dart';
+import 'package:provider/provider.dart';
 
 class ItemCard extends StatelessWidget {
   final ItemHomepage item;
@@ -15,33 +18,49 @@ class ItemCard extends StatelessWidget {
       color: item.colors,
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
-        onTap: () {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              SnackBar(
-                content: Text('Kamu telah menekan tombol ${item.name}!'),
-                action: SnackBarAction(
-                  label: 'Tutup',
-                  onPressed: ScaffoldMessenger.of(context).hideCurrentSnackBar,
-                ),
-              ),
-            );
-          if (item.name == "Tambah Proyek") {
+        onTap: () async {
+          if (item.name == 'Lihat Proyek') {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => const ProjectFormPage(),
+                builder: (context) => const ProjectListScreen(),
               ),
             );
-          }
-          if (item.name == "Tambah Pengalaman") {
+          } else if (item.name == 'Tambah Proyek') {
+            final loggedIn = await ensureLoggedIn(context);
+
+            if (!context.mounted || !loggedIn) return;
+
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const ProjectFormPage()),
+            );
+          } else if (item.name == 'Tambah Pengalaman') {
+            final loggedIn = await ensureLoggedIn(context);
+
+            if (!context.mounted || !loggedIn) return;
+
             Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const ExperienceFormPage(),
               ),
             );
+          } else if (item.name == 'Login') {
+            await ensureLoggedIn(context);
+          } else if (item.name == 'Logout') {
+            String message = 'Logout berhasil!';
+
+            try {
+              await context.read<AuthState>().logout();
+            } catch (_) {
+              message = 'Sesi lokal dihapus, tetapi logout server gagal.';
+            }
+
+            if (!context.mounted) return;
+
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(message)));
           }
         },
         child: Container(

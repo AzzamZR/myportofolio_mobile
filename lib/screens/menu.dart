@@ -1,23 +1,31 @@
 import 'package:flutter/material.dart';
 import 'package:myportofolio_mobile/widgets/left_drawer.dart';
 import 'package:myportofolio_mobile/widgets/item_card.dart';
+import 'package:myportofolio_mobile/services/auth_state.dart';
+import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   final String npm = '2506618723';
   final String nama = 'Azzam Zawawi Al Rasyid';
   final String kelas = 'PBP A';
 
-  final List<ItemHomepage> items = [
-    ItemHomepage('Lihat Proyek', Icons.folder, Colors.blue),
-    ItemHomepage('Tambah Proyek', Icons.add_circle, Colors.green),
-    ItemHomepage('Tambah Pengalaman', Icons.work, Colors.orange),
-    ItemHomepage('Logout', Icons.logout, Colors.red),
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final isLoggedIn = context.watch<AuthState>().isLoggedIn;
+
+    final List<ItemHomepage> items = [
+      ItemHomepage('Lihat Proyek', Icons.folder, Colors.blue),
+      ItemHomepage('Tambah Proyek', Icons.add_circle, Colors.green),
+      ItemHomepage('Tambah Pengalaman', Icons.work, Colors.orange),
+      ItemHomepage(
+        isLoggedIn ? 'Logout' : 'Login',
+        isLoggedIn ? Icons.logout : Icons.login,
+        isLoggedIn ? Colors.red : Colors.indigo,
+      ),
+    ];
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -25,7 +33,7 @@ class MyHomePage extends StatelessWidget {
           style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Theme.of(context).colorScheme.primary,
-        iconTheme: const IconThemeData(color: Colors.white)
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const LeftDrawer(),
       body: SingleChildScrollView(
@@ -76,7 +84,7 @@ class MyHomePage extends StatelessWidget {
               ),
             ],
           ),
-        )
+        ),
       ),
     );
   }
