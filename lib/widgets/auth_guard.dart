@@ -10,9 +10,7 @@ Future<bool> ensureLoggedIn(BuildContext context) async {
 
   final loggedIn = await Navigator.push<bool>(
     context,
-    MaterialPageRoute(
-      builder: (context) => const LoginScreen(),
-    ),
+    MaterialPageRoute(builder: (context) => const LoginScreen()),
   );
 
   return loggedIn ?? false;

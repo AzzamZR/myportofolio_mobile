@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
       providers: [
         Provider<ApiClient>(create: (_) => ApiClient()),
         ChangeNotifierProvider<AuthState>(
-          create: (context) => AuthState(
-            context.read<ApiClient>(),
-          ),
+          create: (context) => AuthState(context.read<ApiClient>()),
         ),
       ],
       child: MaterialApp(

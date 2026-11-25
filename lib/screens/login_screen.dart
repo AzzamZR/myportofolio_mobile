@@ -25,10 +25,7 @@ class _LoginScreenState extends State<LoginScreen> {
     });
 
     try {
-      await context.read<AuthState>().login(
-        _username,
-        _password,
-      );
+      await context.read<AuthState>().login(_username, _password);
 
       if (!mounted) return;
 
@@ -38,18 +35,14 @@ class _LoginScreenState extends State<LoginScreen> {
 
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            'Login gagal (${e.statusCode}). Periksa kredensialmu.',
-          ),
+          content: Text('Login gagal (${e.statusCode}). Periksa kredensialmu.'),
         ),
       );
     } catch (_) {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal terhubung ke server.'),
-        ),
+        const SnackBar(content: Text('Gagal terhubung ke server.')),
       );
     } finally {
       if (mounted) {

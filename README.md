@@ -1,3 +1,4 @@
+[![CI](https://github.com/AzzamZR/myportofolio_mobile/actions/workflows/main.yaml/badge.svg)](https://github.com/AzzamZR/myportofolio_mobile/actions/workflows/main.yaml)
 # Individual Assignment: Personal Portfolio Mobile
 
 Aplikasi portofolio pribadi milik **Azzam Zawawi Al Rasyid**, dikembangkan menggunakan **Flutter dan Dart** sebagai bagian dari mata kuliah **Pemrograman Berbasis Platform (CSGE602022)**, Fakultas Ilmu Komputer, Universitas Indonesia. Proyek ini melanjutkan portofolio berbasis Django ke pengembangan aplikasi mobile.

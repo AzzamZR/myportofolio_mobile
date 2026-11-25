@@ -93,9 +93,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
 
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(
-          builder: (context) => const ProjectListScreen(),
-        ),
+        MaterialPageRoute(builder: (context) => const ProjectListScreen()),
       );
     } on ApiException catch (e) {
       if (e.statusCode == 401) {
@@ -119,9 +117,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
 
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(
-              'Gagal menambahkan proyek (${e.statusCode}).',
-            ),
+            content: Text('Gagal menambahkan proyek (${e.statusCode}).'),
           ),
         );
       }
@@ -129,9 +125,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
       if (!mounted) return;
 
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Gagal terhubung ke server.'),
-        ),
+        const SnackBar(content: Text('Gagal terhubung ke server.')),
       );
     } finally {
       if (mounted) {
@@ -146,9 +140,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Center(
-          child: Text('Add Project Form'),
-        ),
+        title: const Center(child: Text('Add Project Form')),
         backgroundColor: Colors.indigo,
         foregroundColor: Colors.white,
       ),
@@ -254,8 +246,7 @@ class _ProjectFormPageState extends State<ProjectFormPage> {
                     if (uri == null ||
                         !uri.hasAuthority ||
                         uri.host.isEmpty ||
-                        (uri.scheme != 'http' &&
-                            uri.scheme != 'https')) {
+                        (uri.scheme != 'http' && uri.scheme != 'https')) {
                       return 'Masukkan URL gambar yang valid!';
                     }
 

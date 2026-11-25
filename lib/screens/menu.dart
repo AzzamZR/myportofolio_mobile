@@ -5,7 +5,7 @@ import 'package:myportofolio_mobile/services/auth_state.dart';
 import 'package:provider/provider.dart';
 
 class MyHomePage extends StatelessWidget {
-  MyHomePage({super.key});
+  const MyHomePage({super.key});
 
   final String npm = '2506618723';
   final String nama = 'Azzam Zawawi Al Rasyid';
@@ -25,7 +25,7 @@ class MyHomePage extends StatelessWidget {
         isLoggedIn ? Colors.red : Colors.indigo,
       ),
     ];
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text(

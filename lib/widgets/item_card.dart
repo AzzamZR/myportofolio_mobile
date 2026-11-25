@@ -33,9 +33,7 @@ class ItemCard extends StatelessWidget {
 
             Navigator.push(
               context,
-              MaterialPageRoute(
-                builder: (context) => const ProjectFormPage(),
-              ),
+              MaterialPageRoute(builder: (context) => const ProjectFormPage()),
             );
           } else if (item.name == 'Tambah Pengalaman') {
             final loggedIn = await ensureLoggedIn(context);
@@ -61,9 +59,8 @@ class ItemCard extends StatelessWidget {
 
             if (!context.mounted) return;
 
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text(message)),
-            );
+            ScaffoldMessenger.of(context)
+                .showSnackBar(SnackBar(content: Text(message)));
           }
         },
         child: Container(

@@ -33,10 +33,7 @@ class LeftDrawer extends StatelessWidget {
                 SizedBox(height: 10),
                 Text(
                   'Explore personal projects and experiences!',
-                  style: TextStyle(
-                    fontSize: 15,
-                    color: Colors.white,
-                  ),
+                  style: TextStyle(fontSize: 15, color: Colors.white),
                 ),
               ],
             ),
@@ -47,9 +44,7 @@ class LeftDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(
-                  builder: (context) => MyHomePage(),
-                ),
+                MaterialPageRoute(builder: (context) => MyHomePage()),
               );
             },
           ),
@@ -116,21 +111,17 @@ class LeftDrawer extends StatelessWidget {
                 try {
                   await context.read<AuthState>().logout();
                 } catch (_) {
-                  message =
-                      'Sesi lokal dihapus, tetapi logout server gagal.';
+                  message = 'Sesi lokal dihapus, tetapi logout server gagal.';
                 }
 
                 if (!context.mounted) return;
 
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(message)),
-                );
+                ScaffoldMessenger.of(context)
+                    .showSnackBar(SnackBar(content: Text(message)));
 
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => MyHomePage(),
-                  ),
+                  MaterialPageRoute(builder: (context) => MyHomePage()),
                   (route) => false,
                 );
               },

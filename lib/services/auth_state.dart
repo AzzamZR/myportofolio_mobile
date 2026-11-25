@@ -2,8 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:myportofolio_mobile/services/api_client.dart';
 
 class AuthState extends ChangeNotifier {
-  AuthState(this._apiClient, {String? initialToken})
-    : _token = initialToken;
+  AuthState(this._apiClient, {String? initialToken}) : _token = initialToken;
 
   final ApiClient _apiClient;
   String? _token;
