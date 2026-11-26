@@ -9,25 +9,21 @@ class ExperienceListScreen extends StatefulWidget {
   const ExperienceListScreen({super.key});
 
   @override
-  State<ExperienceListScreen> createState() =>
-      _ExperienceListScreenState();
+  State<ExperienceListScreen> createState() => _ExperienceListScreenState();
 }
 
-class _ExperienceListScreenState
-    extends State<ExperienceListScreen> {
+class _ExperienceListScreenState extends State<ExperienceListScreen> {
   late Future<List<Experience>> _experiencesFuture;
 
   @override
   void initState() {
     super.initState();
 
-    _experiencesFuture =
-        context.read<ApiClient>().getExperiences();
+    _experiencesFuture = context.read<ApiClient>().getExperiences();
   }
 
   Future<void> _reload() async {
-    final future =
-        context.read<ApiClient>().getExperiences();
+    final future = context.read<ApiClient>().getExperiences();
 
     setState(() {
       _experiencesFuture = future;
@@ -48,20 +44,15 @@ class _ExperienceListScreenState
           'Daftar Pengalaman',
           style: TextStyle(color: Colors.white),
         ),
-        backgroundColor:
-            Theme.of(context).colorScheme.primary,
-        iconTheme:
-            const IconThemeData(color: Colors.white),
+        backgroundColor: Theme.of(context).colorScheme.primary,
+        iconTheme: const IconThemeData(color: Colors.white),
       ),
       drawer: const LeftDrawer(),
       body: FutureBuilder<List<Experience>>(
         future: _experiencesFuture,
         builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator());
           }
 
           if (snapshot.hasError) {
@@ -87,8 +78,7 @@ class _ExperienceListScreenState
             );
           }
 
-          final experiences =
-              snapshot.data ?? const <Experience>[];
+          final experiences = snapshot.data ?? const <Experience>[];
 
           if (experiences.isEmpty) {
             return RefreshIndicator(
@@ -96,13 +86,10 @@ class _ExperienceListScreenState
               child: LayoutBuilder(
                 builder: (context, constraints) {
                   return SingleChildScrollView(
-                    physics:
-                        const AlwaysScrollableScrollPhysics(),
+                    physics: const AlwaysScrollableScrollPhysics(),
                     child: SizedBox(
                       height: constraints.maxHeight,
-                      child: const Center(
-                        child: Text('Belum ada pengalaman.'),
-                      ),
+                      child: const Center(child: Text('Belum ada pengalaman.')),
                     ),
                   );
                 },
@@ -113,8 +100,7 @@ class _ExperienceListScreenState
           return RefreshIndicator(
             onRefresh: _reload,
             child: ListView.builder(
-              physics:
-                  const AlwaysScrollableScrollPhysics(),
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.all(16),
               itemCount: experiences.length,
               itemBuilder: (context, index) {
@@ -129,17 +115,13 @@ class _ExperienceListScreenState
                       maxLines: 3,
                       overflow: TextOverflow.ellipsis,
                     ),
-                    trailing: const Icon(
-                      Icons.chevron_right,
-                    ),
+                    trailing: const Icon(Icons.chevron_right),
                     onTap: () {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
-                              ExperienceDetailScreen(
-                            experience: experience,
-                          ),
+                              ExperienceDetailScreen(experience: experience),
                         ),
                       );
                     },
