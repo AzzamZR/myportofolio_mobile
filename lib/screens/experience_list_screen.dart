@@ -116,14 +116,28 @@ class _ExperienceListScreenState extends State<ExperienceListScreen> {
                       overflow: TextOverflow.ellipsis,
                     ),
                     trailing: const Icon(Icons.chevron_right),
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      final deleted = await Navigator.push<bool>(
                         context,
                         MaterialPageRoute(
                           builder: (context) =>
                               ExperienceDetailScreen(experience: experience),
                         ),
                       );
+
+                      if (!context.mounted || !mounted) return;
+
+                      if (deleted == true) {
+                        await _reload();
+
+                        if (!mounted) return;
+
+                        ScaffoldMessenger.of(this.context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Pengalaman berhasil dihapus!'),
+                          ),
+                        );
+                      }
                     },
                   ),
                 );
