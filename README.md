@@ -23,14 +23,17 @@ Struktur aplikasi dirancang secara modular agar setiap halaman dan komponen dapa
 ## Fitur Utama
 
 - **Informasi Profil (`InfoCard`):** Menampilkan NPM, nama lengkap, dan kelas PBP pada halaman utama.
-- **Menu Portofolio (`ItemCard`):** Menampilkan empat kartu menu, yaitu Lihat Proyek, Tambah Proyek, Tambah Pengalaman, dan Logout, dengan ikon serta warna yang berbeda.
-- **Navigasi Antarhalaman:** Menggunakan `Navigator.push()` pada kartu menu dan `Navigator.pushReplacement()` pada Drawer untuk berpindah halaman.
-- **Formulir Proyek (`ProjectFormPage`):** Menyediakan input informasi proyek dengan validasi dan ringkasan hasil melalui `AlertDialog`.
-- **Formulir Pengalaman (`ExperienceFormPage`):** Menyediakan input judul, deskripsi, kategori, dan URL thumbnail pengalaman.
-- **Thumbnail Preview:** Menampilkan gambar secara langsung berdasarkan URL yang dimasukkan pada formulir pengalaman, disertai indikator loading dan penanganan error.
-- **Layout Responsif:** Menggunakan `LayoutBuilder` untuk menyesuaikan jumlah kolom menu berdasarkan lebar layar dan `SingleChildScrollView` untuk mengatasi keterbatasan ruang.
-- **SnackBar Interaktif:** Menampilkan pesan sesuai tombol yang ditekan dan menyediakan aksi Tutup.
-- **Struktur Widget Terpisah:** Memisahkan halaman dan komponen ke dalam folder `screens` dan `widgets` agar kode lebih terorganisasi.
+- **Menu Portofolio (`ItemCard`):** Menampilkan lima kartu menu untuk melihat dan menambahkan proyek maupun pengalaman, serta Login atau Logout sesuai status autentikasi.
+- **Navigasi Antarhalaman:** Menggunakan `Navigator.push()`, `Navigator.pushReplacement()`, dan `Navigator.pop()` untuk mengelola perpindahan halaman.
+- **Integrasi Django REST Framework:** Mengambil dan mengirimkan data melalui REST API dengan menggunakan `ApiClient`.
+- **Daftar dan Detail Portofolio:** Menampilkan data proyek dan pengalaman dari backend, dilengkapi kondisi loading, error, retry, empty state, dan pull-to-refresh.
+- **JSON Serialization:** Menggunakan `json_serializable` untuk mengonversi data JSON menjadi objek Dart dan sebaliknya.
+- **Token Authentication:** Mengelola autentikasi pengguna melalui `AuthState` dan melindungi operasi yang memerlukan login menggunakan `ensureLoggedIn()`.
+- **Formulir Proyek dan Pengalaman:** Menyediakan formulir dengan validasi input dan pengiriman data secara langsung ke database Django melalui HTTP POST.
+- **Thumbnail Preview:** Menampilkan gambar secara dinamis berdasarkan URL yang dimasukkan pada formulir pengalaman.
+- **Delete Experience:** Menghapus pengalaman melalui HTTP DELETE terautentikasi, dilengkapi dialog konfirmasi dan pembaruan daftar secara otomatis.
+- **Layout Responsif:** Menggunakan `LayoutBuilder` dan `SingleChildScrollView` untuk menyesuaikan tampilan berdasarkan ukuran layar.
+- **CI/CD:** Menggunakan GitHub Actions untuk menjalankan pemeriksaan kode, pengujian otomatis, dan pembuatan APK release.
 
 ---
 
@@ -70,48 +73,159 @@ Sebagai pengembangan interaktivitas tambahan, saya menambahkan fitur **Thumbnail
 
 Preview hanya ditampilkan ketika URL tidak kosong dan menggunakan `BoxFit.contain` agar gambar tetap terlihat secara utuh. Saya juga menerapkan `loadingBuilder` untuk menampilkan indikator selama proses pemuatan gambar serta `errorBuilder` untuk menangani gambar yang gagal dimuat. Fitur ini berfungsi sebagai pratinjau visual dan tidak melibatkan penyimpanan data permanen.
 
+### Tutorial 10
+
+Pada Tutorial 10, saya mulai mengintegrasikan aplikasi Flutter dengan backend Django yang telah dikembangkan sebelumnya. Saya melakukan konfigurasi Django REST Framework, CORS, dan Token Authentication agar aplikasi Flutter dapat berkomunikasi dengan backend melalui HTTP request.
+
+Pada sisi Flutter, saya membuat model `Project` menggunakan `json_serializable` dan menyesuaikan atributnya dengan serializer pada Django. Saya juga membuat `ApiClient` untuk memisahkan logika komunikasi dengan backend dari widget yang bertanggung jawab terhadap tampilan aplikasi.
+
+Selanjutnya, saya membuat halaman daftar dan detail proyek menggunakan data yang diperoleh melalui API. Saya menggunakan `FutureBuilder` untuk menangani kondisi loading, error, dan data yang berhasil diperoleh, serta `RefreshIndicator` untuk memungkinkan pengguna mengambil ulang data.
+
+Saya juga menerapkan autentikasi menggunakan `AuthState`, `ChangeNotifierProvider`, dan `MultiProvider`. Pengguna dapat melihat daftar proyek tanpa login, tetapi perlu melakukan autentikasi sebelum menambahkan proyek. Formulir proyek yang sebelumnya hanya menampilkan ringkasan input melalui `AlertDialog` kini dapat mengirimkan data ke backend menggunakan HTTP POST.
+
+Pada akhir tutorial, saya mengimplementasikan CI/CD menggunakan GitHub Actions untuk melakukan pemeriksaan format kode, analisis statis, pengujian, serta pembuatan APK release. Saya juga menyesuaikan versi Flutter pada workflow karena terdapat perbedaan versi antara lingkungan pengembangan lokal dan GitHub Actions.
+
+### Individual Assignment 9
+
+Pada Tugas 9, saya melanjutkan implementasi Tutorial 10 dengan mengintegrasikan bagian Pengalaman (*Experience*) ke backend Django. Saya membuat model `Experience` menggunakan `json_serializable` dan menambahkan method `getExperiences()` serta `createExperience()` pada `ApiClient` yang sudah tersedia.
+
+Saya membuat `ExperienceListScreen` dan `ExperienceDetailScreen` untuk menampilkan data pengalaman yang diperoleh melalui API. Halaman daftar menggunakan `FutureBuilder` dan `RefreshIndicator`, sedangkan halaman detail menampilkan informasi pengalaman, termasuk kategori, deskripsi, thumbnail, status pengalaman, tanggal berakhir, dan informasi star.
+
+Saya juga mengembangkan `ExperienceFormPage` agar dapat mengirimkan data secara langsung ke backend menggunakan HTTP POST dengan token autentikasi. Beberapa nilai input disesuaikan dengan skema API Django tanpa menghilangkan fitur Thumbnail Preview yang telah dikembangkan pada Tugas 8. Formulir juga dilengkapi penanganan kegagalan request dan mekanisme login ulang ketika server mengembalikan HTTP 401.
+
+Sebagai pengembangan tambahan, saya mengimplementasikan fitur **Delete Experience** yang memungkinkan pengguna dengan izin yang sesuai untuk menghapus pengalaman melalui aplikasi Flutter. Fitur ini menggunakan HTTP DELETE dengan token autentikasi dan dialog konfirmasi untuk mencegah penghapusan yang tidak disengaja.
+
+Setelah penghapusan berhasil, halaman detail mengembalikan nilai melalui `Navigator.pop(context, true)` agar halaman daftar dapat mengambil ulang data dari backend secara otomatis. Saya memilih fitur ini karena berkaitan langsung dengan materi networking, asynchronous programming, autentikasi, dan pengiriman data antarrute, sekaligus memperluas kemampuan aplikasi dalam mengelola data portofolio.
+
 ---
 
 ## Struktur Proyek
 
 ```text
 myportofolio_mobile/
+├── .github/
+│   └── workflows/
+│       └── main.yaml
 ├── lib/
 │   ├── main.dart
+│   ├── config.dart
+│   ├── models/
+│   │   ├── project.dart
+│   │   └── experience.dart
+│   ├── services/
+│   │   ├── api_client.dart
+│   │   └── auth_state.dart
 │   ├── screens/
 │   │   ├── menu.dart
+│   │   ├── login_screen.dart
 │   │   ├── project_form.dart
-│   │   └── experience_form.dart
+│   │   ├── project_list_screen.dart
+│   │   ├── project_detail_screen.dart
+│   │   ├── experience_form.dart
+│   │   ├── experience_list_screen.dart
+│   │   └── experience_detail_screen.dart
 │   └── widgets/
 │       ├── item_card.dart
-│       └── left_drawer.dart
+│       ├── left_drawer.dart
+│       └── auth_guard.dart
 ├── test/
 │   └── widget_test.dart
 ├── android/
 ├── ios/
 ├── web/
+├── analysis_options.yaml
 ├── pubspec.yaml
 └── README.md
 ```
 
 ## Menjalankan Proyek
 
-Pastikan Flutter SDK sudah terpasang dan bisa digunakan dari terminal. Jalankan perintah berikut dari direktori proyek:
+### Prasyarat
+
+- Flutter SDK 3.47.9
+- Dart SDK yang kompatibel dengan `pubspec.yaml`
+- Backend Django yang dapat diakses oleh aplikasi Flutter
+
+Repositori dan deployment backend:
+
+- **Repositori Django:** [myportofolio](https://github.com/AzzamZR/myportofolio)
+- **Website:** [MyPortfolio](https://azzam-zawawi-myportofolio.pws.cs.ui.ac.id/)
+- **Project API:** [Projects](https://azzam-zawawi-myportofolio.pws.cs.ui.ac.id/api/v1/projects/)
+- **Experience API:** [Experiences](https://azzam-zawawi-myportofolio.pws.cs.ui.ac.id/api/v1/experiences/)
+
+### Instalasi Dependensi
+
+Clone repositori dan jalankan perintah berikut:
 
 ```bash
+git clone https://github.com/AzzamZR/myportofolio_mobile.git
+cd myportofolio_mobile
 flutter doctor
 flutter pub get
-flutter run -d chrome
 ```
 
-Untuk memeriksa kode dan menjalankan pengujian widget:
+Lakukan code generation untuk model Project dan Experience:
 
 ```bash
+dart run build_runner build --delete-conflicting-outputs
+```
+
+### Menjalankan dengan Backend Lokal
+
+Pastikan backend Django sudah dikonfigurasi, migrasi database telah dijalankan, dan server aktif melalui perintah:
+
+```bash
+python manage.py runserver
+```
+
+Untuk menjalankan aplikasi pada Chrome:
+
+```bash
+flutter run -d chrome --dart-define=API_BASE_URL=http://localhost:8000
+```
+
+Untuk menjalankan aplikasi pada Android Emulator:
+
+```bash
+flutter run --dart-define=API_BASE_URL=http://10.0.2.2:8000
+```
+
+### Menjalankan dengan Backend Deployment
+
+Aplikasi juga dapat diarahkan ke backend yang telah di-deploy menggunakan konfigurasi `API_BASE_URL`.
+
+```bash
+flutter run --dart-define=API_BASE_URL=https://azzam-zawawi-myportofolio.pws.cs.ui.ac.id
+```
+
+### Pemeriksaan Kode dan Pengujian
+
+```bash
+dart format --output=none --set-exit-if-changed .
 flutter analyze
 flutter test
 ```
 
-Perintah di atas adalah langkah verifikasi yang dapat dijalankan secara lokal. Hasil eksekusinya perlu diperiksa pada versi kode terbaru sebelum dinyatakan bebas masalah.
+### Build APK
+
+Untuk menghasilkan APK release secara lokal:
+
+```bash
+flutter build apk --release --dart-define=API_BASE_URL=https://azzam-zawawi-myportofolio.pws.cs.ui.ac.id
+```
+
+APK juga dapat diunduh melalui artefak `app-release-apk` pada workflow GitHub Actions yang berhasil dijalankan.
+
+### CI/CD
+
+Proyek menggunakan GitHub Actions dengan dua job utama:
+
+- `build`: menjalankan code generation, pemeriksaan format, analisis statis, dan pengujian otomatis menggunakan `very_good_workflows`.
+- `build_apk`: menghasilkan APK release setelah job `build` berhasil dan mengunggahnya sebagai artefak.
+
+Versi Flutter ditentukan secara eksplisit pada kedua job agar lingkungan CI konsisten dengan lingkungan pengembangan lokal. URL backend untuk APK dikonfigurasi melalui repository variable `API_BASE_URL`.
+
+Status pipeline dapat dilihat pada halaman [GitHub Actions](https://github.com/AzzamZR/myportofolio_mobile/actions).
 
 ---
 
@@ -198,6 +312,46 @@ Untuk mengatasi keterbatasan tinggi layar, saya menggunakan `SingleChildScrollVi
 `GlobalKey<FormState>` digunakan untuk mengakses state dari widget `Form`. Melalui key tersebut, saya dapat memanggil `validate()` ketika tombol Save ditekan. Method `validate()` menjalankan fungsi `validator` pada field yang memiliki aturan validasi. Jika ada input yang tidak valid, validator mengembalikan pesan kesalahan yang ditampilkan pada field terkait. Jika seluruh pemeriksaan berhasil, aplikasi dapat melanjutkan proses dengan menampilkan `AlertDialog`.
 
 Contohnya, pada field Judul Pengalaman, input yang hanya berisi spasi akan ditolak karena validator menggunakan `value.trim().isEmpty`. Hal yang sama juga berlaku pada Deskripsi Pengalaman. Pemeriksaan ini penting karena penggunaan `TextFormField` atau pemilihan jenis keyboard hanya membantu pengguna memasukkan data, tetapi tidak menjamin bahwa isinya sesuai dengan aturan yang dibutuhkan. Oleh karena itu, validasi tetap harus dilakukan melalui kode agar input yang tidak sesuai dapat ditolak.
+
+### Assignment 9
+
+**1. Mengapa kita menggunakan `@JsonSerializable(fieldRename: FieldRename.snake)` dan `@JsonKey(includeToJson: false)` alih-alih mengirim objek `Map<String, dynamic>` mentah langsung dari widget? Jelaskan satu bug yang dicegah atau dapat dicegah oleh pendekatan ini pada model bagianmu.**
+
+Penggunaan `@JsonSerializable` memungkinkan proses konversi antara JSON dan objek Dart dilakukan secara otomatis melalui code generation. Dengan menggunakan model yang memiliki tipe data jelas, proses pengolahan data menjadi lebih terstruktur dan tidak perlu dilakukan secara manual pada setiap widget.
+
+Parameter `fieldRename: FieldRename.snake` digunakan untuk menyesuaikan penamaan atribut Dart yang menggunakan camelCase dengan penamaan field pada API Django yang menggunakan snake_case. Sementara itu, `@JsonKey(includeToJson: false)` digunakan untuk mengecualikan atribut tertentu ketika objek dikonversi menjadi JSON untuk dikirim ke backend.
+
+Pada model `Experience` milik saya, salah satu bug yang dapat dicegah adalah kesalahan penamaan atribut `endedAt` ketika dikirim ke Django. Tanpa pemetaan nama yang sesuai, Flutter dapat mengirimkan key `endedAt`, padahal backend menggunakan `ended_at`. Selain itu, atribut seperti `id`, `isOngoing`, dan `starCount` tidak ikut dikirim ketika melakukan POST karena nilainya ditentukan oleh backend. Pendekatan ini membantu menjaga konsistensi data dan memisahkan tanggung jawab model dari widget.
+
+**2. Mengapa Future yang diteruskan ke FutureBuilder harus diinisialisasi di dalam initState() alih-alih langsung di dalam build(), dan mengapa ApiClient sebaiknya melempar ApiException daripada mengembalikan null pada respons HTTP non-2xx?**
+
+Method `build()` dapat dipanggil berkali-kali ketika terjadi perubahan state atau ketika Flutter perlu membangun ulang widget. Jika Future dibuat langsung di dalam `build()`, HTTP request dapat dijalankan kembali setiap kali terjadi rebuild. Hal tersebut dapat menyebabkan request yang tidak diperlukan, penggunaan jaringan yang berlebihan, dan tampilan loading yang berulang.
+
+Pada `ExperienceListScreen`, saya menginisialisasi `_experiencesFuture` di dalam `initState()` agar pengambilan data awal dilakukan satu kali untuk setiap instance State. Ketika pengguna ingin mengambil ulang data, saya menggunakan method `_reload()` untuk memperbarui Future melalui `setState()`.
+
+`ApiClient` sebaiknya melempar `ApiException` karena respons yang gagal perlu dibedakan dari respons yang berhasil tetapi tidak memiliki data. Exception juga dapat menyimpan informasi seperti HTTP status code sehingga aplikasi dapat memberikan penanganan yang sesuai.
+
+Sebagai contoh, ketika backend mengembalikan HTTP 401, aplikasi dapat menghapus sesi autentikasi dan meminta pengguna melakukan login kembali. Jika kegagalan tersebut hanya mengembalikan `null`, aplikasi akan lebih sulit mengetahui penyebab kegagalan dan menentukan tindakan yang diperlukan.
+
+**3. Bandingkan SessionAuthentication milik Django (dari Tutorial 04/07) dengan TokenAuthentication milik DRF (dari Tutorial 10). Mengapa myportfolio_mobile menggunakan TokenAuthentication sementara SessionAuthentication tetap diaktifkan pada backend Django?**
+
+`SessionAuthentication` menggunakan session yang dikelola oleh Django. Setelah pengguna berhasil login, browser menyimpan session ID melalui cookie yang dikirimkan kembali pada request berikutnya. Mekanisme ini sesuai untuk aplikasi web berbasis Django yang menggunakan browser dan dilengkapi perlindungan CSRF untuk request yang mengubah data.
+
+Sementara itu, `TokenAuthentication` menggunakan token yang diperoleh setelah pengguna mengirimkan kredensial yang valid ke endpoint autentikasi. Token tersebut kemudian dikirim melalui header `Authorization` pada setiap request yang memerlukan autentikasi.
+
+Pada proyek saya, aplikasi Flutter menggunakan `TokenAuthentication` karena berkomunikasi dengan backend melalui REST API dan tidak bergantung pada mekanisme session cookie browser. Token disimpan sementara pada `AuthState` dan digunakan oleh `ApiClient` ketika melakukan operasi seperti POST dan DELETE.
+
+`SessionAuthentication` tetap diaktifkan agar request REST API berbasis sesi dari website Django masih dapat digunakan. Dengan demikian, backend dapat mendukung aplikasi web dan mobile tanpa harus mengganti mekanisme autentikasi yang sudah diterapkan pada website sebelumnya.
+
+**4. Jelaskan peran job build (very_good_workflows) dan build_apk dalam pipeline `.github/workflows/main.yaml` milikmu (termasuk pemeriksaan apa saja yang dijalankan very_good_workflows di balik layar). Mengapa berkas `*.g.dart` dimasukkan ke .gitignore meskipun CI membutuhkannya untuk menganalisis dan membangun aplikasi?**
+
+Job `build` berfungsi untuk memeriksa kualitas dan kebenaran kode sebelum aplikasi dibangun. Pada proyek saya, job ini menggunakan reusable workflow dari `very_good_workflows` yang melakukan checkout repository, setup Flutter, instalasi dependensi, code generation melalui perintah setup, pemeriksaan format kode, analisis statis, serta pengujian otomatis dan pengumpulan test coverage.
+
+Job `build_apk` bertugas menghasilkan APK release yang dapat digunakan pada perangkat Android. Job ini memiliki konfigurasi `needs: build`, sehingga hanya dijalankan apabila seluruh pemeriksaan pada job `build` berhasil. Pada job tersebut, dependensi dipasang kembali, file hasil code generation dibuat, dan APK dibangun dengan konfigurasi `API_BASE_URL`. Hasilnya kemudian diunggah sebagai artefak `app-release-apk`.
+
+File `*.g.dart` dimasukkan ke `.gitignore` karena merupakan hasil code generation, bukan kode yang ditulis dan dikelola secara langsung. Menyimpan file tersebut dalam repository dapat menimbulkan perubahan yang tidak diperlukan serta kemungkinan ketidaksesuaian dengan model aslinya.
+
+Meskipun tidak disimpan dalam repository, file tersebut tetap dibutuhkan untuk proses analisis, pengujian, dan build aplikasi. Oleh karena itu, saya menjalankan `build_runner` pada masing-masing job agar file yang dibutuhkan dapat dihasilkan kembali sesuai dengan model dan dependensi proyek. Saya juga menentukan versi Flutter secara eksplisit pada workflow untuk menghindari perbedaan perilaku antara lingkungan lokal dan CI.
 
 ---
 
@@ -329,3 +483,70 @@ Selama pengerjaan, saya menyadari bahwa saran dari AI tidak selalu sesuai dengan
 Saya juga memahami bahwa kode yang terlihat benar belum tentu menghasilkan perilaku atau tampilan yang sesuai. Hal ini membuat saya perlu melakukan pengujian secara langsung, terutama ketika mengubah layout, mengelola state, atau menambahkan interaktivitas baru. Melalui proses tersebut, saya semakin memahami pentingnya hubungan antar-widget dan bagaimana perubahan pada satu bagian dapat memengaruhi bagian lainnya.
 
 Secara keseluruhan, AI membantu saya memahami konsep, mengeksplorasi alternatif implementasi, dan mencari penyebab masalah. Namun, saya tetap perlu mengevaluasi solusi yang diberikan, menentukan perubahan yang sesuai, serta memastikan hasil implementasinya berjalan sebagaimana mestinya.
+
+### Tutorial 10 & Individual Assignment 9
+
+Pada tahap ini, saya menggunakan **ChatGPT** sebagai alat bantu untuk memahami integrasi Flutter dengan backend Django, JSON serialization, asynchronous programming, token authentication, dan CI/CD. Saya memberikan modul tutorial, instruksi tugas, materi perkuliahan, serta akses terhadap repository agar pembahasan dapat disesuaikan dengan struktur proyek yang sedang saya kerjakan.
+
+Strategi prompting yang saya gunakan adalah membagi pengerjaan menjadi beberapa tahap, meminta penjelasan mengenai implementasi, dan memeriksa kesesuaiannya dengan instruksi tutorial. Saya juga meminta AI untuk membantu melakukan review kode setelah perubahan di-commit serta menganalisis pesan error yang muncul selama pengerjaan.
+
+**Bagian yang Dibantu AI:**
+
+- Membantu memahami konfigurasi Django REST Framework, CORS, dan Token Authentication.
+- Membantu menyesuaikan model Flutter dengan serializer dan struktur data Django.
+- Memberikan panduan serta contoh implementasi HTTP GET, POST, dan DELETE melalui `ApiClient`.
+- Membantu memahami penggunaan `FutureBuilder`, `initState()`, dan `RefreshIndicator` dalam pengambilan data asynchronous.
+- Menjelaskan pengelolaan autentikasi melalui `AuthState`, Provider, dan mekanisme route guard.
+- Membantu mengembangkan penanganan HTTP 401, HTTP 403, dan kegagalan komunikasi dengan backend.
+- Membantu menyusun konfigurasi GitHub Actions dan menganalisis penyebab kegagalan pipeline CI/CD.
+- Memberikan alternatif pengembangan tambahan berdasarkan materi perkuliahan dan rubrik penilaian.
+- Membantu menyusun dokumentasi dan jawaban pertanyaan reflektif berdasarkan implementasi proyek.
+
+**Bagian yang Saya Kerjakan dan Putuskan Sendiri:**
+
+- Memilih Pengalaman sebagai bagian portofolio yang diintegrasikan pada Tugas 9.
+- Memutuskan untuk mempertahankan struktur backend Django dan menyesuaikan model Flutter sesuai dengan kebutuhan API.
+- Mempertahankan fitur Thumbnail Preview yang telah dikembangkan pada Tugas 8.
+- Memilih Delete Experience sebagai pengembangan tambahan dengan membatasi cakupan perubahan pada operasi penghapusan.
+- Menerapkan perubahan kode secara bertahap dan menjalankan pemeriksaan menggunakan `dart format`, `flutter analyze`, dan `flutter test`.
+- Mengelola branch, commit, push, dan pull request selama proses pengembangan.
+
+#### AI Chat / Prompting Log
+
+1. **Memahami penyesuaian struktur data antara Flutter dan Django**
+
+   > Dalam proses integrasi Flutter dengan Django, terdapat perbedaan antara atribut pada formulir Flutter dan field yang tersedia pada model Django. Apakah penyesuaian sebaiknya dilakukan pada model Flutter atau backend Django? Jelaskan pertimbangan dan dampak dari kedua pendekatan tersebut terhadap konsistensi data dan implementasi yang sudah ada.
+
+   **Konteks & Tujuan:** Saya ingin memahami pendekatan yang tepat ketika terdapat perbedaan struktur data antara frontend dan backend. Dari pembahasan tersebut, saya memahami pentingnya menjadikan skema API sebagai acuan dalam pengembangan model Flutter serta dampak perubahan model terhadap database dan aplikasi yang sudah dikembangkan sebelumnya.
+
+2. **Menganalisis kegagalan pipeline CI/CD**
+
+   > Pipeline GitHub Actions mengalami kegagalan ketika saya membuat pull request untuk menggabungkan Tutorial 10 ke branch main, meskipun pemeriksaan kode secara lokal telah berhasil. Analisis log workflow untuk mengidentifikasi penyebab kegagalan tersebut dan jelaskan solusi yang dapat diterapkan tanpa mengabaikan pemeriksaan kualitas kode.
+
+   **Konteks & Tujuan:** Saya ingin memahami penyebab perbedaan hasil pemeriksaan antara lingkungan lokal dan GitHub Actions. Dari pembahasan tersebut, saya mempelajari pentingnya konsistensi versi SDK dan dependensi dalam menjaga proses pengembangan serta build aplikasi yang dapat direproduksi.
+
+3. **Memahami pengelolaan autentikasi dan penanganan sesi**
+
+   > Jika status autentikasi pada Flutter ditentukan berdasarkan token yang tersimpan di AuthState, bagaimana aplikasi mengetahui bahwa token tersebut sudah tidak valid pada backend? Jelaskan hubungan antara AuthState, ApiClient, respons HTTP 401, dan mekanisme login ulang tanpa menghilangkan data yang telah dimasukkan pengguna pada formulir.
+
+   **Konteks & Tujuan:** Saya ingin memahami perbedaan antara status autentikasi yang tersimpan pada aplikasi dan validitas token pada backend. Dari pembahasan mengenai alur autentikasi, saya memahami bahwa keberadaan token pada state lokal tidak selalu menjamin token tersebut masih valid. Oleh karena itu, aplikasi perlu menangani respons dari backend dan memperbarui status autentikasi sesuai kondisi yang sebenarnya.
+
+4. **Memahami sinkronisasi data melalui navigation result**
+
+   > Ketika sebuah Experience berhasil dihapus melalui HTTP DELETE pada halaman detail, bagaimana halaman daftar dapat mengetahui bahwa data tersebut telah berubah? Jelaskan bagaimana Navigator.push(), Navigator.pop(), dan FutureBuilder dapat digunakan untuk memperbarui daftar pengalaman secara otomatis tanpa membuat halaman daftar baru.
+
+   **Konteks & Tujuan:** Saya ingin memahami bagaimana perubahan data pada suatu halaman dapat memengaruhi halaman sebelumnya. Melalui pembahasan mengenai pengembalian nilai antarrute, saya memahami bahwa hasil operasi dapat dikirimkan kembali melalui `Navigator.pop()`. Nilai tersebut kemudian digunakan untuk menentukan apakah halaman daftar perlu mengambil ulang data dari backend.
+
+5. **Memahami penggunaan BuildContext dalam operasi asynchronous**
+
+   > Analyzer memberikan peringatan use_build_context_synchronously ketika saya menggunakan BuildContext setelah operasi asynchronous, meskipun sudah melakukan pengecekan mounted. Jelaskan perbedaan antara mounted pada State dan context.mounted pada BuildContext, serta bagaimana menentukan pengecekan yang tepat berdasarkan context yang digunakan.
+
+   **Konteks & Tujuan:** Saya ingin memahami hubungan antara operasi asynchronous dan lifecycle widget pada Flutter. Dari pembahasan tersebut, saya mengetahui bahwa widget atau context dapat menjadi tidak aktif ketika suatu operasi sedang berlangsung. Oleh karena itu, pengecekan yang sesuai diperlukan sebelum melakukan navigasi atau mengakses komponen lain melalui BuildContext.
+
+#### Keterbatasan AI dan Pemahaman Saya
+
+Selama pengerjaan, saya menyadari bahwa solusi yang diberikan AI perlu disesuaikan dengan struktur proyek, versi dependensi, dan lingkungan pengembangan yang digunakan. Implementasi yang terlihat sesuai secara teori belum tentu dapat langsung berjalan pada kondisi yang berbeda. Oleh karena itu, saya perlu memeriksa kembali setiap perubahan melalui analisis kode, pengujian, dan hasil eksekusi aplikasi.
+
+Saya juga memahami bahwa integrasi aplikasi tidak hanya berkaitan dengan keberhasilan pengiriman data, tetapi juga bagaimana aplikasi menangani kegagalan komunikasi, autentikasi, dan perubahan state. Proses pengerjaan secara bertahap membantu saya memahami hubungan antara model, service, dan widget serta tanggung jawab masing-masing komponen.
+
+AI membantu saya memahami konsep, memberikan alternatif implementasi, dan menelusuri penyebab masalah. Namun, saya tetap perlu mengevaluasi solusi yang diberikan, menentukan cakupan perubahan yang sesuai, dan memastikan hasil implementasinya melalui pemeriksaan secara langsung.
